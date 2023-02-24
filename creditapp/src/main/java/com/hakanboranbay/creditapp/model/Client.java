@@ -17,6 +17,7 @@ public class Client implements Serializable {
 	private String dateOfBirth; // YYYY-MM-DD format needed.
 	private int creditScore;
 	private final int creditLimitConstant = 4;
-	private long lastModified;
+	private long lastModified = System.currentTimeMillis();
+	private Boolean isDeleted;
 	
 }
