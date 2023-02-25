@@ -1,28 +1,42 @@
 package com.hakanboranbay.creditapp.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hakanboranbay.creditapp.jdbc.JdbcRepository;
 import com.hakanboranbay.creditapp.model.Client;
 import com.hakanboranbay.creditapp.model.CreditApplication;
+import com.hakanboranbay.creditapp.repositories.ClientJdbcRepository;
+import com.hakanboranbay.creditapp.repositories.CreditApplicationJdbcRepository;
 import com.hakanboranbay.creditapp.request.CreditApplicationRequest;
 
 @Service
 public class CreditService {
+	
+	@Autowired
+	private CreditApplicationJdbcRepository creditApplicationJdbcRepository;
+	@Autowired
+	private ClientJdbcRepository clientJdbcRepository;
 
-	@Autowired 
-	JdbcRepository jdbcRepository;
-
-	public CreditApplication checkCreditApplication(CreditApplicationRequest request) {
-		return mapApplication(request);
+	public CreditApplication createCreditApplication(CreditApplicationRequest request) {
+		CreditApplication creditApplication = mapApplication(request);
+		if (creditApplication != null) {
+			creditApplicationJdbcRepository.createCreditApplication(creditApplication);
+		}
+		return creditApplication;
+	}
+	
+	public List<CreditApplication> listClientCreditApplications(Client client) {
+		return creditApplicationJdbcRepository.listClientCreditApplications(client);
 	}
 
 	private CreditApplication mapApplication(CreditApplicationRequest request) {
 		CreditApplication creditApplication = new CreditApplication();
-		Client client = jdbcRepository.findById(request.getClientIdNo());
+		Client client = clientJdbcRepository.getDetailsById(request.getClientIdNo());
 		creditApplication.setClientIdNo(request.getClientIdNo());
-
+		creditApplication.setClientMonthlyIncome(client.getMonthlyIncome());
+		creditApplication.setClientCreditScore(client.getCreditScore());
 		creditApplication.setCreditLimit(calculateAllowedCreditAmount(client, request));
 		if (calculateAllowedCreditAmount(client, request) > 0) {
 			creditApplication.setSuccessful(true);

@@ -11,28 +11,28 @@ import com.hakanboranbay.creditapp.request.ClientCreateRequest;
 public class ClientService {
 	
 	@Autowired
-    private ClientJdbcRepository clientRepository;
+    private ClientJdbcRepository clientJdbcRepository;
 
     public Client createClient(ClientCreateRequest request){
         Client client = mapClient(request);
         if (client != null) {
-            clientRepository.create(client);
+            clientJdbcRepository.create(client);
         }
         return client;
     }
     
     public Client getDetailsById(String idNo) {
-    	return clientRepository.getDetailsById(idNo);
+    	return clientJdbcRepository.getDetailsById(idNo);
     }
     
     public int updateClientCreditScore(Client client, int creditScore, double monthlyIncome) {
     	client.setCreditScore(creditScore);
     	client.setMonthlyIncome(monthlyIncome);
-    	return clientRepository.updateClient(client, creditScore, monthlyIncome);
+    	return clientJdbcRepository.updateClient(client, creditScore, monthlyIncome);
     }
     
     public int deleteClient(Client client) {
-    	return clientRepository.deleteClient(client);
+    	return clientJdbcRepository.deleteClient(client);
     }
 
     private Client mapClient(ClientCreateRequest request) {
