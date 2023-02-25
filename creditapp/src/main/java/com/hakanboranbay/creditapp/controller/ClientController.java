@@ -16,6 +16,9 @@ import com.hakanboranbay.creditapp.request.ClientUpdateRequest;
 import com.hakanboranbay.creditapp.request.DeleteClientRequest;
 import com.hakanboranbay.creditapp.responses.ClientCreateFailResponse;
 import com.hakanboranbay.creditapp.responses.ClientCreateSuccessResponse;
+import com.hakanboranbay.creditapp.responses.ClientDeleteResponse;
+import com.hakanboranbay.creditapp.responses.ClientUpdateFailResponse;
+import com.hakanboranbay.creditapp.responses.ClientUpdateSuccessfulResponse;
 import com.hakanboranbay.creditapp.service.ClientService;
 
 @RestController
@@ -40,26 +43,22 @@ public class ClientController {
 		}
 
 	}
-
-	@GetMapping("/clients/{clientIdNo}")
-	public ResponseEntity<?> getDetail(@PathVariable String clientIdNo) {
-		Client client = clientService.getDetailsById(clientIdNo);
-
-		if (client != null) {
-			return new ResponseEntity<>(client, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
 	
 	@PostMapping("/client")
 	public ResponseEntity<?> updateCreditScore(@RequestBody ClientUpdateRequest request) {
 		Client client = clientService.getDetailsById(request.getIdNo());
 		clientService.updateClientCreditScore(client, request.getCreditScore(), request.getMonthlyIncome());
 		if (client != null) {
-			return new ResponseEntity<>(client, HttpStatus.OK);
+			ClientUpdateSuccessfulResponse response = new ClientUpdateSuccessfulResponse();
+			response.setMessage("Update successful.");
+			response.setIdNo(client.getIdNo());
+			response.setCreditScore(request.getCreditScore());
+			response.setMonthlyIncome(request.getMonthlyIncome());
+			return ResponseEntity.ok(response);
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			ClientUpdateFailResponse response = new ClientUpdateFailResponse();
+			response.setMessage("Update failed: invalid parameter(s)");
+			return ResponseEntity.badRequest().body(response);
 		}
 	}
 	
@@ -67,10 +66,13 @@ public class ClientController {
 	public ResponseEntity<?> deleteClient(@RequestBody DeleteClientRequest request) {
 		Client client = clientService.getDetailsById(request.getIdNo());
 		clientService.deleteClient(client);
+		ClientDeleteResponse response = new ClientDeleteResponse();
 		if (client != null) {
-			return new ResponseEntity<>(client, HttpStatus.OK);
+			response.setMessage("Client with id " + request.getIdNo() + "is deleted successfully.");
+			return ResponseEntity.ok(response);
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			response.setMessage("Client with id " + request.getIdNo() + "does not exist.");
+			return ResponseEntity.badRequest().body(response);
 		}
 	}
 	
