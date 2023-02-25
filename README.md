@@ -1,2 +1,2 @@
-# CreditApplicateionApp
+# CreditApplicationApp
 Credit application program.
