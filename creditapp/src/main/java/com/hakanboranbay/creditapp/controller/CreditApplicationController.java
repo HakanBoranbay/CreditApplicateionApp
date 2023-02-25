@@ -15,6 +15,7 @@ import com.hakanboranbay.creditapp.model.Client;
 import com.hakanboranbay.creditapp.model.CreditApplication;
 import com.hakanboranbay.creditapp.request.CreditApplicationRequest;
 import com.hakanboranbay.creditapp.responses.CreditSuccessfulResponse;
+import com.hakanboranbay.creditapp.responses.ListCreditApplicationsFailResponse;
 import com.hakanboranbay.creditapp.service.ClientService;
 import com.hakanboranbay.creditapp.service.CreditService;
 
@@ -52,7 +53,9 @@ public class CreditApplicationController {
     	if (client != null) {
 			return new ResponseEntity<>(creditList, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			ListCreditApplicationsFailResponse response = new ListCreditApplicationsFailResponse();
+			response.setMessage("Invalid parameter(s)");
+			return ResponseEntity.badRequest().body(response);
 		}
     }
 
