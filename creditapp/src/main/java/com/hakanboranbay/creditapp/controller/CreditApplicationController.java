@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hakanboranbay.creditapp.jdbc.JdbcRepository;
 import com.hakanboranbay.creditapp.model.CreditApplication;
 import com.hakanboranbay.creditapp.request.CreditApplicationRequest;
-import com.hakanboranbay.creditapp.responses.ClientCreateFailResponse;
 import com.hakanboranbay.creditapp.responses.CreditSuccessfulResponse;
 import com.hakanboranbay.creditapp.service.CreditService;
 
@@ -25,14 +24,15 @@ public class CreditApplicationController {
     public ResponseEntity<?> create(@RequestBody CreditApplicationRequest request) {
         CreditApplication creditApplication = service.checkCreditApplication(request);
         jdbcRepository.saveCreditApplication(creditApplication);
+        CreditSuccessfulResponse response = new CreditSuccessfulResponse();
 
         if (creditApplication.isSuccessful()) {
-            CreditSuccessfulResponse response = new CreditSuccessfulResponse();
+            response = new CreditSuccessfulResponse();
             response.setMessage("Credit approved");
             response.setCreditAmount(creditApplication.getCreditLimit());
             return ResponseEntity.ok(response);
         } else {
-            ClientCreateFailResponse response = new ClientCreateFailResponse();
+            response = new CreditSuccessfulResponse();
             response.setMessage("Credit not approved");
             return ResponseEntity.badRequest().body(response);
         }

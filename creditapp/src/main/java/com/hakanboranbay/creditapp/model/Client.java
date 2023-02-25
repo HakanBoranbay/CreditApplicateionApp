@@ -12,12 +12,11 @@ public class Client implements Serializable {
 	private String idNo;
 	private String name;
 	private String surname;
-	private float monthlyIncome;
+	private double monthlyIncome;
 	private String phoneNo;
 	private String dateOfBirth; // YYYY-MM-DD format needed.
 	private int creditScore;
 	private final int creditLimitConstant = 4;
 	private long lastModified = System.currentTimeMillis();
-	private Boolean isDeleted;
 	
 }

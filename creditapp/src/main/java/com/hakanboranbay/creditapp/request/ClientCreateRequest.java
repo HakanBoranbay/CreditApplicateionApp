@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * {
+ * 		   "idNo" : 121212121212,	
  *         "name" : "Onur",
  *         "surname" : "Boranbay",
  *         "monthlyIncome" : 5000.0,

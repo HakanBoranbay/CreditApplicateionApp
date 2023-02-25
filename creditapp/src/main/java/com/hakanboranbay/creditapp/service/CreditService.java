@@ -21,11 +21,11 @@ public class CreditService {
 	private CreditApplication mapApplication(CreditApplicationRequest request) {
 		CreditApplication creditApplication = new CreditApplication();
 		Client client = jdbcRepository.findById(request.getClientIdNo());
+		creditApplication.setClientIdNo(request.getClientIdNo());
 
 		creditApplication.setCreditLimit(calculateAllowedCreditAmount(client, request));
 		if (calculateAllowedCreditAmount(client, request) > 0) {
 			creditApplication.setSuccessful(true);
-			creditApplication.setClientIdNo(request.getClientIdNo());
 		}
 
 		return creditApplication;

@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hakanboranbay.creditapp.model.Client;
-import com.hakanboranbay.creditapp.repositories.ClientRepository;
+import com.hakanboranbay.creditapp.repositories.ClientJdbcRepository;
 import com.hakanboranbay.creditapp.request.ClientCreateRequest;
 
 @Service
 public class ClientService {
 	
 	@Autowired
-    private ClientRepository clientRepository;
+    private ClientJdbcRepository clientRepository;
 
     public Client createClient(ClientCreateRequest request){
         Client client = mapClient(request);
@@ -20,16 +20,23 @@ public class ClientService {
         }
         return client;
     }
+    
+    public Client getDetailsById(String idNo) {
+    	return clientRepository.getDetailsById(idNo);
+    }
+    
+    public int updateClientCreditScore(Client client, int creditScore, double monthlyIncome) {
+    	client.setCreditScore(creditScore);
+    	client.setMonthlyIncome(monthlyIncome);
+    	return clientRepository.updateClient(client, creditScore, monthlyIncome);
+    }
+    
+    public int deleteClient(Client client) {
+    	return clientRepository.deleteClient(client);
+    }
 
     private Client mapClient(ClientCreateRequest request) {
         Client client = null;
-
-//        if (request.getMonthlyIncome() < 0
-//                || request.getDateOfBirth().getYear() < 1923
-//                || request.getDateOfBirth().getYear() > 2005
-//                || request.getCreditScore() < 0 || request.getCreditScore() > 1900) {
-//            return client;
-//        }
 
         client = new Client();
         client.setIdNo(request.getIdNo());
