@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hakanboranbay.creditapp.logger.Logger;
 import com.hakanboranbay.creditapp.model.Client;
 import com.hakanboranbay.creditapp.request.ClientCreateRequest;
 import com.hakanboranbay.creditapp.request.ClientUpdateRequest;
@@ -23,6 +24,8 @@ public class ClientController {
 	
 	@Autowired
 	private ClientService clientService;
+	@Autowired
+	private Logger logger;
 	
 	@PostMapping("/clients")
 	public ResponseEntity<?> create(@RequestBody ClientCreateRequest request) {
@@ -32,6 +35,8 @@ public class ClientController {
 			ClientCreateSuccessResponse response = new ClientCreateSuccessResponse();
 			response.setMessage("Account created.");
 			response.setAccountIdNo(client.getIdNo());
+			String message = "Account with id " + request.getIdNo() + " is created.";
+			logger.logToFile(message);
 			return ResponseEntity.ok(response);
 		} else {
 			ClientCreateFailResponse response = new ClientCreateFailResponse();
@@ -51,6 +56,8 @@ public class ClientController {
 			response.setIdNo(client.getIdNo());
 			response.setCreditScore(request.getCreditScore());
 			response.setMonthlyIncome(request.getMonthlyIncome());
+			String message = "Account with id " + request.getIdNo() + " is updated: creditScore = " + request.getCreditScore() + ", monthlyIncome = " + request.getMonthlyIncome() + ".";
+			logger.logToFile(message);
 			return ResponseEntity.ok(response);
 		} else {
 			ClientUpdateFailResponse response = new ClientUpdateFailResponse();
@@ -66,6 +73,8 @@ public class ClientController {
 		ClientDeleteResponse response = new ClientDeleteResponse();
 		if (client != null) {
 			response.setMessage("Client with id " + request.getIdNo() + "is deleted successfully.");
+			String message = "Account with id " + request.getIdNo() + " is deleted.";
+			logger.logToFile(message);
 			return ResponseEntity.ok(response);
 		} else {
 			response.setMessage("Client with id " + request.getIdNo() + "does not exist.");

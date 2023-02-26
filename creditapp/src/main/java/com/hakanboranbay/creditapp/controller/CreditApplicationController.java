@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hakanboranbay.creditapp.logger.Logger;
 import com.hakanboranbay.creditapp.model.Client;
 import com.hakanboranbay.creditapp.model.CreditApplication;
 import com.hakanboranbay.creditapp.request.CreditApplicationRequest;
@@ -26,6 +27,8 @@ public class CreditApplicationController {
     private CreditService creditService;
     @Autowired
     private ClientService clientService;
+    @Autowired
+    private Logger logger;
 
     @PostMapping("/credits")
     public ResponseEntity<?> create(@RequestBody CreditApplicationRequest request) {
@@ -36,6 +39,8 @@ public class CreditApplicationController {
             response = new CreditSuccessfulResponse();
             response.setMessage("Credit approved");
             response.setCreditAmount(creditApplication.getCreditLimit());
+            String message = "Account " + request.getClientIdNo() + " applied for credit. Result = seccessful, CreditLimit = " + creditApplication.getCreditLimit() + ".";
+            logger.logToFile(message);
             return ResponseEntity.ok(response);
         } else {
             response = new CreditSuccessfulResponse();
